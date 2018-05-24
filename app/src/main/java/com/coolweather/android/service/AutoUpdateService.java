@@ -53,7 +53,7 @@ public class AutoUpdateService extends Service {
      * 更新天气信息。
      */
     private void updateWeather(){
-        
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
         if (weatherString != null) {
