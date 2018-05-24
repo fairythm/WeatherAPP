@@ -1,13 +1,16 @@
 package com.coolweather.android.service;
 
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,6 +26,7 @@ import java.io.IOException;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import com.coolweather.android.KEY;
 
 public class AutoUpdateService extends Service {
 
@@ -49,14 +53,18 @@ public class AutoUpdateService extends Service {
      * 更新天气信息。
      */
     private void updateWeather(){
+        
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
         if (weatherString != null) {
             // 有缓存时直接解析天气数据
             Weather weather = Utility.handleWeatherResponse(weatherString);
             String weatherId = weather.basic.weatherId;
-            String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherId + "&key=716ff8f31bd449cea3d2537ec10f5b4b";
+            String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherId + "&key="+KEY.key;
+            //String weatherUrl = "https://free-api.heweather.com/s6/weather/forecast?location"+weatherId+"&key=716ff8f31bd449cea3d2537ec10f5b4b";
             HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
+                @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+                @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseText = response.body().string();
@@ -82,6 +90,8 @@ public class AutoUpdateService extends Service {
     private void updateBingPic() {
         String requestBingPic = "http://guolin.tech/api/bing_pic";
         HttpUtil.sendOkHttpRequest(requestBingPic, new Callback() {
+            @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+            @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String bingPic = response.body().string();
